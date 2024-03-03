@@ -4,7 +4,7 @@ local NvimTree = {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = {},
   keys = {
-    { '<leader>fe', '<cmd>NvimTreeToggle<cr>', desc = 'toggle explorer' },
+    { '<leader>fe', '<cmd>NvimTreeToggle<cr>',   desc = 'toggle explorer' },
     { '<leader>fF', '<cmd>NvimTreeFindFile<cr>', desc = 'focus in explorer' },
   },
   lazy = false,
@@ -15,13 +15,29 @@ local function lsp_connection()
   local active_clients = vim.lsp.get_active_clients()
   if #active_clients == 0 then
     return ''
+  elseif #active_clients == 1 then
+    return ' ' .. active_clients[1].name
   else
-    return ''
+    local first_active_client = ""
+    for _, client in ipairs(active_clients) do
+      if client.name ~= 'null-ls' then
+        first_active_client = client.name
+        break
+      end
+    end
+    return ' ' .. first_active_client
   end
 end
 
 local function pomodoro()
   return require('pomodoro').get_current_state()
+end
+
+local function branch_color()
+  local latte = require('catppuccin.palettes').get_palette('latte')
+  return {
+    fg = latte.mauve,
+  }
 end
 
 local Lualine = {
@@ -40,6 +56,7 @@ local Lualine = {
         left = '|',
         right = '|',
       },
+      globalstatus = true,
     },
     sections = {
       lualine_a = {
@@ -51,14 +68,25 @@ local Lualine = {
         },
       },
       lualine_b = {
+        { 'branch', icon = { '', color = branch_color }, color = branch_color },
+      },
+      lualine_c = {
         {
           'filename',
           filestatus = true,
           path = 4,
         },
       },
-      lualine_c = { { 'branch' } },
-      lualine_x = { { 'diff' } },
+      lualine_x = {
+        {
+          'diff',
+          symbols = {
+            added = ' ',
+            modified = ' ',
+            removed = ' ',
+          },
+        },
+      },
       lualine_y = {
         { 'diagnostics' },
         {
