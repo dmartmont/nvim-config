@@ -15,6 +15,8 @@ local Mason = {
     },
     ui = {
       border = 'rounded',
+      width = 0.8,
+      height = 0.8,
     },
   },
   ---@param opts MasonSettings | {ensure_installed: string[]}
@@ -178,25 +180,25 @@ local NoneLs = {
       sources = {
         -- Typescript
         -- Help none-ls to find the correct command
-        none_ls.builtins.formatting.prettier.with({
-          timeout = 8000,
-          dynamic_command = function(params)
-            return cmd_resolver.from_yarn_pnp()(params)
-              or cmd_resolver.from_node_modules()(params)
-              or vim.fn.executable(params.command) == 1 and params.command
-          end,
-          filetypes = {
-            'javascript',
-            'typescript',
-            'javascriptreact',
-            'typescriptreact',
-            'vue',
-            'css',
-            'scss',
-            'less',
-            'html',
-          },
-        }),
+        -- none_ls.builtins.formatting.prettier.with({
+        --   timeout = 8000,
+        --   dynamic_command = function(params)
+        --     return cmd_resolver.from_yarn_pnp()(params)
+        --         or cmd_resolver.from_node_modules()(params)
+        --         or vim.fn.executable(params.command) == 1 and params.command
+        --   end,
+        --   filetypes = {
+        --     'javascript',
+        --     'typescript',
+        --     'javascriptreact',
+        --     'typescriptreact',
+        --     'vue',
+        --     'css',
+        --     'scss',
+        --     'less',
+        --     'html',
+        --   },
+        -- }),
         -- Lua
         none_ls.builtins.formatting.stylua,
         -- Bash

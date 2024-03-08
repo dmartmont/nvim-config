@@ -20,6 +20,7 @@ local FzfLua = {
 
     -- Commands
     { '<leader>ch', '<cmd>FzfLua command_history<cr>', desc = 'commands history' },
+    { '<leader>cd', '<cmd>FzfLua help_tags<cr>', desc = 'help docs' },
 
     -- Quickfix
     { '<leader>xq', '<cmd>FzfLua quickfix<cr>', desc = 'quickfix' },

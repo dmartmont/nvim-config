@@ -1,3 +1,5 @@
+local tab_utils = require('dmartmont.table-utils')
+
 local NvimTree = {
   'nvim-tree/nvim-tree.lua',
   version = '*',
@@ -6,9 +8,13 @@ local NvimTree = {
   keys = {
     { '<leader>fe', '<cmd>NvimTreeToggle<cr>',   desc = 'toggle explorer' },
     { '<leader>fF', '<cmd>NvimTreeFindFile<cr>', desc = 'focus in explorer' },
+    { '<leader>f=', '<cmd>NvimTreeResize +10<cr>', desc = '+10 resize explorer' },
+    { '<leader>f-', '<cmd>NvimTreeResize -10<cr>', desc = '-10 resize explorer' },
   },
   lazy = false,
 }
+
+local hidden_lsp = { 'null-ls', 'eslint', 'copilot' }
 
 local function lsp_connection()
   -- Provides icon for LSP session
@@ -18,9 +24,9 @@ local function lsp_connection()
   elseif #active_clients == 1 then
     return ' ' .. active_clients[1].name
   else
-    local first_active_client = ""
+    local first_active_client = ''
     for _, client in ipairs(active_clients) do
-      if client.name ~= 'null-ls' then
+      if not tab_utils.has_value(hidden_lsp, client.name) then
         first_active_client = client.name
         break
       end

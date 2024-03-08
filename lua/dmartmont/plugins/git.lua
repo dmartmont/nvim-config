@@ -1,6 +1,8 @@
 local GitSigns = {
   'lewis6991/gitsigns.nvim',
-  config = true,
+  opts = {
+    numhl = true,
+  }
 }
 
 local Fugitive = {
