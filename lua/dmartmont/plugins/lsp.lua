@@ -126,8 +126,10 @@ local LspConfig = {
                   'typescriptreact',
                 },
               },
+              format = true,
               on_attach = function(client, bufnr)
-                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentFormattingProvider = true
+                client.server_capabilities.documentRangeFormattingProvider = true
 
                 on_attach(client, bufnr)
               end,
