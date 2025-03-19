@@ -1,15 +1,19 @@
 local tab_utils = require('dmartmont.table-utils')
 
-local NvimTree = {
+local FileTree = {
   'nvim-tree/nvim-tree.lua',
   version = '*',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  config = {},
   keys = {
-    { '<leader>fe', '<cmd>NvimTreeToggle<cr>',   desc = 'toggle explorer' },
-    { '<leader>fF', '<cmd>NvimTreeFindFile<cr>', desc = 'focus in explorer' },
+    { '<leader>fe', '<cmd>NvimTreeToggle<cr>',     desc = 'toggle explorer' },
+    { '<leader>fF', '<cmd>NvimTreeFindFile<cr>',   desc = 'focus in explorer' },
     { '<leader>f=', '<cmd>NvimTreeResize +10<cr>', desc = '+10 resize explorer' },
     { '<leader>f-', '<cmd>NvimTreeResize -10<cr>', desc = '-10 resize explorer' },
+  },
+  opts = {
+    view = {
+      width = 50,
+    },
   },
   lazy = false,
 }
@@ -18,7 +22,7 @@ local hidden_lsp = { 'null-ls', 'eslint', 'copilot' }
 
 local function lsp_connection()
   -- Provides icon for LSP session
-  local active_clients = vim.lsp.get_active_clients()
+  local active_clients = vim.lsp.get_clients()
   if #active_clients == 0 then
     return ''
   elseif #active_clients == 1 then
@@ -52,7 +56,6 @@ local Lualine = {
   event = 'VeryLazy',
   config = {
     options = {
-      theme = 'catppuccin',
       icons_enabled = true,
       section_separators = {
         left = '',
@@ -125,12 +128,7 @@ local Bufferline = {
 }
 
 local Notifications = {
-  'j-hui/fidget.nvim',
-  opts = {
-    notification = {
-      override_vim_notify = true,
-    },
-  },
+  'rcarriga/nvim-notify',
 }
 
-return { NvimTree, Lualine, Bufferline, Notifications }
+return { FileTree, Lualine, Bufferline, Notifications }

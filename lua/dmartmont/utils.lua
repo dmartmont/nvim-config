@@ -24,13 +24,13 @@ local function inoremap(key, to, opts)
   noremap('i', key, to, opts)
 end
 
+-- Remap with <leader>
 local function lnnoremap(key, to, opts)
-  -- Remap with <leader>
   nnoremap('<leader>' .. key, to, opts)
 end
 
+-- Remap with <localleader>
 local function llnnoremap(key, to, opts)
-  -- Remap with <localleader>
   nnoremap('<localleader>' .. key, to, opts)
 end
 

@@ -4,31 +4,45 @@ local FzfLua = {
   lazy = false,
   keys = {
     -- Find
-    { '<leader>ff', '<cmd>FzfLua files<cr>', desc = 'find files' },
-    { '<leader>fr', '<cmd>FzfLua resume<cr>', desc = 'find resume' },
-    { '<leader>fb', '<cmd>FzfLua buffers<cr>', desc = 'find buffers' },
-    { '<leader>fo', '<cmd>FzfLua oldfiles<cr>', desc = 'find old files' },
+    { '<leader>ff',  '<cmd>FzfLua files<cr>',          desc = 'find files' },
+    { '<leader>fr',  '<cmd>FzfLua resume<cr>',         desc = 'find resume' },
+    { '<leader>fb',  '<cmd>FzfLua buffers<cr>',        desc = 'find buffers' },
+    { '<leader>fo',  '<cmd>FzfLua oldfiles<cr>',       desc = 'find old files' },
 
     -- Grep
-    { '<leader>fss', '<cmd>FzfLua grep<cr>', desc = 'grep search' },
-    { '<leader>fsr', '<cmd>FzfLua grep_last<cr>', desc = 'grep resume' },
-    { '<leader>fsl', '<cmd>FzfLua live_grep_native<cr>', desc = 'grep live search' },
-    { '<leader>fsg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'grep live glob' },
+    { '<leader>fg',  '<cmd>FzfLua grep<cr>',           desc = 'grep search' },
+    { '<leader>fgr', '<cmd>FzfLua grep_last<cr>',      desc = 'grep resume' },
+    { '<leader>fgw', '<cmd>FzfLua grep_cword<cr>',     desc = 'grep word' },
+    { '<leader>fgv', '<cmd>FzfLua grep_visual<cr>',    desc = 'grep visual' },
+    { '<leader>fgl', '<cmd>FzfLua live_grep<cr>',      desc = 'grep live search' },
+    { '<leader>fgg', '<cmd>FzfLua live_grep_glob<cr>', desc = 'grep live glob' },
+    {
+      '<leader>fgf',
+      function()
+        require('fzf-lua').live_grep({
+          cwd = './' .. vim.fn.expand('%:h'),
+        })
+      end,
+      desc = 'grep live in folder',
+    },
 
     -- Colorschemes
-    { '<leader>us', '<cmd>FzfLua colorschemes<cr>', desc = 'colorschemes' },
+    { '<leader>us', '<cmd>FzfLua colorschemes<cr>',          desc = 'colorschemes' },
 
+    -- History
+    { '<leader>hc', '<cmd>FzfLua command_history<cr>',       desc = 'commands history' },
+    { '<leader>hs', '<cmd>FzfLua search_history<cr>',        desc = 'search history' },
     -- Commands
-    { '<leader>ch', '<cmd>FzfLua command_history<cr>', desc = 'commands history' },
-    { '<leader>cd', '<cmd>FzfLua help_tags<cr>', desc = 'help docs' },
+    { '<leader>?d', '<cmd>FzfLua help_tags<cr>',             desc = 'help docs' },
+    { '<leader>cs', '<cmd>FzfLua commands<cr>',              desc = 'commands' },
 
     -- Quickfix
-    { '<leader>xq', '<cmd>FzfLua quickfix<cr>', desc = 'quickfix' },
-    { '<leader>xd', '<cmd>FzfLua diagnostics_document<cr>', desc = 'document diagnostics' },
+    { '<leader>xq', '<cmd>FzfLua quickfix<cr>',              desc = 'quickfix' },
+    { '<leader>xd', '<cmd>FzfLua diagnostics_document<cr>',  desc = 'document diagnostics' },
     { '<leader>xw', '<cmd>FzfLua diagnostics_workspace<cr>', desc = 'workspace diagnostics' },
   },
   opts = {
-    'telescope',
+    'hide',
     winopts = {
       height = 0.4,
       width = 1,
@@ -37,12 +51,22 @@ local FzfLua = {
       preview = {
         default = 'bat',
         layout = 'horizontal',
-        scrollbar = false,
         horizontal = 'right:45%',
       },
+      on_create = function()
+        vim.keymap.set(
+          't',
+          '<C-r>',
+          [['<C-\><C-N>"'.nr2char(getchar()).'pi']],
+          { expr = true, buffer = true }
+        )
+      end,
     },
     files = {
-      preview = 'bat',
+      cwd_prompt = false,
+      cwd_prompt_shorten_len = 2,
+      cwd_prompt_shorten_val = 2,
+      path_shorten = 3,
     },
     keymaps = {
       fzf = {
@@ -52,6 +76,9 @@ local FzfLua = {
     },
     oldfiles = {
       cwd_only = true,
+      fn_transform = function(entry)
+        require('fzf-lua').make_entry.file(entry, { path_shorten = 3 })
+      end,
     },
   },
   config = function(_, opts)

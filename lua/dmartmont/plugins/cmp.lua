@@ -69,9 +69,8 @@ local NvimCmp = {
       sources = cmp.config.sources({
         { name = 'copilot', group_index = 2 },
         { name = 'nvim_lsp', group_index = 2 },
-        { name = 'buffer', group_index = 1 },
-      }, {
         { name = 'path' },
+        { name = 'buffer', group_index = 1 },
       }),
       mapping = cmp.mapping.preset.insert({
         -- Select items
@@ -111,6 +110,8 @@ local NvimCmp = {
 
 local LuaSnip = {
   'L3MON4D3/LuaSnip',
+	version = "v2.*",
+	build = "make install_jsregexp",
   dependencies = {
     {
       'rafamadriz/friendly-snippets',

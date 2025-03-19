@@ -56,27 +56,27 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap('gd', vim.lsp.buf.definition, 'goto definition')
+  nmap('gd', require('fzf-lua').lsp_definitions, 'goto definition')
   nmap('gr', require('fzf-lua').lsp_references, 'goto references')
-  nmap('gR', '<cmd>TroubleToggle lsp_references<cr>', 'goto references')
-  nmap('gI', vim.lsp.buf.implementation, 'goto implementation')
+  nmap('gI', require('fzf-lua').lsp_implementations, 'goto implementation')
   nmap('<leader>rn', vim.lsp.buf.rename, 'rename')
   nmap('<leader>ca', require('fzf-lua').lsp_code_actions, 'code action')
   nmap('<leader>D', vim.lsp.buf.type_definition, 'type definition')
   nmap('<leader>ds', require('fzf-lua').lsp_document_symbols, 'document symbols')
-  nmap('<leader>ws', require('fzf-lua').lsp_live_workspace_symbols, 'workspace symbols')
+  nmap(
+    '<leader>ws',
+    require('fzf-lua').lsp_live_workspace_symbols,
+    'workspace symbols'
+  )
   nmap('<leader>cf', vim.lsp.buf.format, 'code format')
   nmap('<leader>vd', vim.diagnostic.open_float, 'diagnostics open')
 
   nmap('K', vim.lsp.buf.hover, 'hover documentation')
-  -- nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
 
   nmap('gD', vim.lsp.buf.declaration, 'goto declaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, 'add folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, 'remove folder')
-  nmap('<leader>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, 'list folders')
+  nmap('<leader>wl', vim.lsp.buf.list_workspace_folders, 'list folders')
 end
 
 local default_setup = function(server)
@@ -97,11 +97,11 @@ local LspConfig = {
       opts = {
         handlers = {
           default_setup,
-          tsserver = function()
-            require('lspconfig').tsserver.setup({
+          ts_ls = function()
+            require('lspconfig').ts_ls.setup({
               capabilities = lsp_capabilities,
               init_options = {
-                maxTsServerMemory = 1024 * 12,
+                maxTsServerMemory = 1024 * 24,
                 preferences = {
                   importModuleSpecifierPreference = 'non-relative',
                 },
@@ -126,6 +126,18 @@ local LspConfig = {
                   'typescriptreact',
                 },
               },
+              format = true,
+              on_attach = function(client, bufnr)
+                client.server_capabilities.documentFormattingProvider = true
+                client.server_capabilities.documentRangeFormattingProvider = true
+
+                on_attach(client, bufnr)
+              end,
+            })
+          end,
+          pyright = function()
+            require('lspconfig').pyright.setup({
+              capabilities = lsp_capabilities,
               format = true,
               on_attach = function(client, bufnr)
                 client.server_capabilities.documentFormattingProvider = true
@@ -165,7 +177,7 @@ local LspConfig = {
       severity_sort = true,
       float = {
         border = 'rounded',
-        source = 'always',
+        source = true,
       },
     })
   end,
@@ -176,8 +188,7 @@ local NoneLs = {
   dependencies = { 'nvim-lua/plenary.nvim' },
   config = function()
     local none_ls = require('null-ls')
-    local cmd_resolver = require('null-ls.helpers.command_resolver')
-
+    -- local cmd_resolver = require('null-ls.helpers.command_resolver')
     none_ls.setup({
       sources = {
         -- Typescript
@@ -211,6 +222,8 @@ local NoneLs = {
         -- Golang
         -- none_ls.builtins.diagnostics.golangci_lint,
         -- none_ls.builtins.formatting.gofmt,
+        -- Python
+        none_ls.builtins.formatting.black,
       },
     })
   end,

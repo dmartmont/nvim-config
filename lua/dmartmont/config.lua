@@ -1,5 +1,6 @@
 -- Setup colorscheme
-vim.cmd.colorscheme('catppuccin')
+-- vim.cmd.colorscheme('catppuccin')
+vim.cmd.colorscheme('rose-pine')
 
 -- Refresh changed content
 vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter' }, {
